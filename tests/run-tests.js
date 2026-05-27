@@ -29,8 +29,16 @@ async function runStockGameTests(loadText) {
     });
   });
 
+  test("selects three active companies per theme", () => {
+    if (state.activeCompanyIds.length !== 21) throw new Error(`expected 21 active companies, got ${state.activeCompanyIds.length}`);
+    data.themes.forEach((theme) => {
+      const count = engine.getActiveCompanies(data, state).filter((company) => company.theme === theme).length;
+      if (count !== 3) throw new Error(`${theme} has ${count} active companies`);
+    });
+  });
+
   test("buying one share reduces cash and adds holding", () => {
-    const company = data.companies[0];
+    const company = engine.getActiveCompanies(data, state)[0];
     const price = engine.getCurrentPrice(data, state, company.id);
     const result = engine.trade(data, state, "buy", company.id, 1);
     if (!result.ok) throw new Error(result.message);
@@ -40,7 +48,7 @@ async function runStockGameTests(loadText) {
   });
 
   test("cannot sell more shares than owned", () => {
-    const company = data.companies[1];
+    const company = engine.getActiveCompanies(data, state)[1];
     const result = engine.trade(data, state, "sell", company.id, 1);
     if (result.ok) throw new Error("oversell succeeded");
   });

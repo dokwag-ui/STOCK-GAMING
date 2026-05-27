@@ -20,15 +20,15 @@ if ($index -notmatch '<script src="data\.js"></script>\s*<script src="engine\.js
   throw "index.html does not load data.js, engine.js, and game.js in order"
 }
 
-if ($data -notmatch 'for \(let year = 2012; year <= 2025; year \+= 1\)' -or $data -notmatch '2026 Current') {
-  throw "data.js does not define the 2012-2025 quarter range plus 2026 Current"
+if ($data -notmatch '2026 Current' -or $data -notmatch 'companyPool') {
+  throw "data.js does not define the real-data company pool and 2026 Current step"
 }
 
-if (($data | Select-String -Pattern '\["' -AllMatches).Matches.Count -lt 21) {
-  throw "data.js appears to contain fewer than 21 company blueprints"
+if (($data | Select-String -Pattern '"realName"' -AllMatches).Matches.Count -lt 35) {
+  throw "data.js appears to contain fewer than 35 real companies"
 }
 
-if ($engine -notmatch 'Engine\.trade' -or $engine -notmatch 'Engine\.advanceStep' -or $engine -notmatch 'Engine\.rankInvestors') {
+if ($engine -notmatch 'Engine\.trade' -or $engine -notmatch 'Engine\.advanceStep' -or $engine -notmatch 'Engine\.rankInvestors' -or $engine -notmatch 'pickActiveCompanyIds') {
   throw "engine.js is missing required game engine functions"
 }
 

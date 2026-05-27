@@ -6,6 +6,8 @@
   };
 
   Engine.createInitialState = function createInitialState(data) {
+    const seed = Date.now();
+    const activeCompanyIds = Engine.pickActiveCompanyIds(data, seed);
     const investors = [
       Engine.createInvestor("user", "나", "user", data.initialCash),
       Engine.createInvestor("ai-balanced", "균형형 투자자", "balanced", data.initialCash),
@@ -16,7 +18,9 @@
 
     return {
       currentStep: 0,
-      selectedCompanyId: data.companies[0].id,
+      seed,
+      activeCompanyIds,
+      selectedCompanyId: activeCompanyIds[0],
       themeFilter: "All",
       investors,
       tradeLog: [],
@@ -25,8 +29,35 @@
     };
   };
 
+  Engine.random = function random(seed) {
+    let value = seed % 2147483647;
+    if (value <= 0) value += 2147483646;
+    return function next() {
+      value = value * 16807 % 2147483647;
+      return (value - 1) / 2147483646;
+    };
+  };
+
+  Engine.pickActiveCompanyIds = function pickActiveCompanyIds(data, seed) {
+    const next = Engine.random(seed || 1);
+    const ids = [];
+    data.themes.forEach((theme) => {
+      const pool = data.companyPool.filter((company) => company.theme === theme);
+      const shuffled = pool.slice().sort(() => next() - 0.5);
+      shuffled.slice(0, 3).forEach((company, index) => {
+        company.activeAlias = `${theme}-${String.fromCharCode(65 + index)}`;
+        ids.push(company.id);
+      });
+    });
+    return ids;
+  };
+
+  Engine.getActiveCompanies = function getActiveCompanies(data, state) {
+    return state.activeCompanyIds.map((id) => Engine.getCompany(data, id));
+  };
+
   Engine.getCompany = function getCompany(data, companyId) {
-    return data.companies.find((company) => company.id === companyId);
+    return data.companyPool.find((company) => company.id === companyId);
   };
 
   Engine.getInvestor = function getInvestor(state, investorId) {
@@ -115,7 +146,7 @@
 
   Engine.runAiTrades = function runAiTrades(data, state) {
     state.investors.filter((investor) => investor.id !== "user").forEach((investor, aiIndex) => {
-      const candidates = data.companies.slice().sort((a, b) => {
+      const candidates = Engine.getActiveCompanies(data, state).slice().sort((a, b) => {
         return Engine.scoreCompany(data, state, b, investor.profile, aiIndex) - Engine.scoreCompany(data, state, a, investor.profile, aiIndex);
       });
       const buyTarget = candidates[0];
@@ -163,6 +194,12 @@
 
   Engine.rankInvestors = function rankInvestors(data, state) {
     return state.investors.slice().sort((a, b) => Engine.totalValue(data, state, b) - Engine.totalValue(data, state, a));
+  };
+
+  Engine.isValidState = function isValidState(data, state) {
+    if (!state || !Array.isArray(state.activeCompanyIds)) return false;
+    if (state.activeCompanyIds.length !== data.themes.length * 3) return false;
+    return state.activeCompanyIds.every((id) => Boolean(Engine.getCompany(data, id)));
   };
 
   window.StockGameEngine = Engine;

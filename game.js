@@ -29,7 +29,10 @@
     closeEndgameButton: document.querySelector("#closeEndgameButton")
   };
 
-  let state = loadState() || engine.createInitialState(data);
+  let state = loadState();
+  if (!engine.isValidState(data, state)) {
+    state = engine.createInitialState(data);
+  }
   engine.saveSnapshot(data, state);
 
   function formatMoney(value) {
@@ -85,7 +88,7 @@
 
   function renderCompanies() {
     const user = engine.getInvestor(state, "user");
-    const companies = data.companies.filter((company) => state.themeFilter === "All" || company.theme === state.themeFilter);
+    const companies = engine.getActiveCompanies(data, state).filter((company) => state.themeFilter === "All" || company.theme === state.themeFilter);
     els.companyTableBody.innerHTML = companies.map((company) => {
       const price = engine.getCurrentPrice(data, state, company.id);
       const previous = state.currentStep > 0 ? company.prices[state.currentStep - 1] : price;
@@ -93,7 +96,7 @@
       const selectedClass = company.id === state.selectedCompanyId ? "selected-row" : "";
       return `
         <tr class="${selectedClass}">
-          <td><button class="link-button" type="button" data-company-id="${company.id}">${company.alias}</button></td>
+          <td><button class="link-button" type="button" data-company-id="${company.id}">${displayAlias(company)}</button></td>
           <td>${company.theme}</td>
           <td>${formatMoney(price)}</td>
           <td class="${change >= 0 ? "positive" : "negative"}">${formatRate(change)}</td>
@@ -115,7 +118,7 @@
       return `${x.toFixed(1)},${y.toFixed(1)}`;
     }).join(" ");
 
-    els.selectedCompanyTitle.textContent = company.alias;
+    els.selectedCompanyTitle.textContent = displayAlias(company);
     els.selectedCompanyHint.textContent = `${company.theme} · ${company.market}`;
     els.priceChart.innerHTML = `
       <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none">
@@ -129,7 +132,7 @@
   function renderTradePanel(company) {
     const quantity = engine.getInvestor(state, "user").holdings[company.id] || 0;
     els.tradeSummary.innerHTML = `
-      <strong>${company.alias}</strong>
+      <strong>${displayAlias(company)}</strong>
       <span>${company.descriptionHint}</span>
       <span>현재가 ${formatMoney(engine.getCurrentPrice(data, state, company.id))} · 보유 ${quantity}주</span>
     `;
@@ -147,7 +150,7 @@
       const quantity = entry[1];
       const company = engine.getCompany(data, companyId);
       const value = quantity * engine.getCurrentPrice(data, state, companyId);
-      return `<div class="holding-row"><span>${company.alias}</span><strong>${quantity}주</strong><em>${formatMoney(value)}</em></div>`;
+      return `<div class="holding-row"><span>${displayAlias(company)}</span><strong>${quantity}주</strong><em>${formatMoney(value)}</em></div>`;
     }).join("");
   }
 
@@ -185,16 +188,20 @@
 
   function renderEndgame() {
     const ranked = engine.rankInvestors(data, state);
-    const revealRows = data.companies.map((company) => `
-      <tr><td>${company.alias}</td><td>${company.realName}</td><td>${company.market}</td></tr>
+    const revealRows = engine.getActiveCompanies(data, state).map((company) => `
+      <tr><td>${displayAlias(company)}</td><td>${company.realName}</td><td>${company.symbol}</td><td>${company.market}</td></tr>
     `).join("");
     els.endgameContent.innerHTML = `
       <p class="winner">우승: <strong>${ranked[0].name}</strong> · ${formatMoney(engine.totalValue(data, state, ranked[0]))}</p>
       <div class="table-wrap">
-        <table><thead><tr><th>익명명</th><th>실제 회사</th><th>시장</th></tr></thead><tbody>${revealRows}</tbody></table>
+        <table><thead><tr><th>익명명</th><th>실제 회사</th><th>티커</th><th>시장</th></tr></thead><tbody>${revealRows}</tbody></table>
       </div>
     `;
     els.endgameModal.classList.remove("hidden");
+  }
+
+  function displayAlias(company) {
+    return company.activeAlias || company.alias;
   }
 
   function resetGame() {
