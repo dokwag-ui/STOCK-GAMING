@@ -1,0 +1,412 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #eef2f6;
+  color: #18202a;
+  font-family: Arial, "Noto Sans KR", sans-serif;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app-shell {
+  width: min(1480px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 24px 0 40px;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 18px;
+}
+
+.topbar h1,
+.panel h2 {
+  margin: 0;
+  letter-spacing: 0;
+}
+
+.topbar h1 {
+  font-size: 30px;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  color: #5f6f82;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.topbar-actions,
+.trade-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.primary-button,
+.ghost-button,
+.danger-button {
+  border: 1px solid transparent;
+  border-radius: 6px;
+  min-height: 40px;
+  padding: 0 14px;
+  font-weight: 700;
+}
+
+.primary-button {
+  background: #1167b1;
+  color: white;
+}
+
+.danger-button {
+  background: #b42318;
+  color: white;
+}
+
+.ghost-button {
+  background: white;
+  color: #263241;
+  border-color: #c6d1dd;
+}
+
+.primary-button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.metric,
+.panel {
+  background: white;
+  border: 1px solid #d8e0e8;
+  border-radius: 8px;
+  box-shadow: 0 8px 22px rgba(25, 39, 52, .06);
+}
+
+.metric {
+  padding: 14px;
+}
+
+.metric span {
+  display: block;
+  color: #687789;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.metric strong {
+  font-size: 20px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr .8fr;
+  grid-template-areas:
+    "market chart trade"
+    "market portfolio ranking";
+  gap: 14px;
+  align-items: start;
+}
+
+.panel {
+  padding: 16px;
+  min-width: 0;
+}
+
+.market-panel {
+  grid-area: market;
+}
+
+.chart-panel {
+  grid-area: chart;
+}
+
+.trade-panel {
+  grid-area: trade;
+}
+
+.portfolio-panel {
+  grid-area: portfolio;
+}
+
+.ranking-panel {
+  grid-area: ranking;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+select,
+input {
+  border: 1px solid #c8d3df;
+  border-radius: 6px;
+  background: white;
+  min-height: 38px;
+  padding: 0 10px;
+}
+
+.table-wrap {
+  overflow: auto;
+  border: 1px solid #e0e7ef;
+  border-radius: 6px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 560px;
+}
+
+th,
+td {
+  padding: 10px;
+  border-bottom: 1px solid #e8eef4;
+  text-align: left;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+th {
+  background: #f6f8fb;
+  color: #526173;
+  font-size: 12px;
+}
+
+tr:last-child td {
+  border-bottom: 0;
+}
+
+.selected-row td {
+  background: #eaf4ff;
+}
+
+.link-button {
+  border: 0;
+  background: transparent;
+  color: #105c9f;
+  font-weight: 800;
+  padding: 0;
+}
+
+.positive {
+  color: #087443;
+  font-weight: 700;
+}
+
+.negative {
+  color: #c0342b;
+  font-weight: 700;
+}
+
+.hint-chip {
+  border: 1px solid #d8e0e8;
+  border-radius: 999px;
+  padding: 6px 10px;
+  color: #526173;
+  font-size: 12px;
+}
+
+.chart-box {
+  height: 240px;
+  border: 1px solid #e0e7ef;
+  border-radius: 6px;
+  background: #fbfdff;
+  overflow: hidden;
+}
+
+.chart-box svg {
+  width: 100%;
+  height: 100%;
+}
+
+.chart-line {
+  fill: none;
+  stroke: #1167b1;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.chart-box text {
+  fill: #526173;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.event-feed {
+  margin-top: 12px;
+  color: #3f4d5d;
+  line-height: 1.5;
+}
+
+.trade-summary {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 14px;
+  color: #3f4d5d;
+}
+
+.trade-summary strong {
+  color: #18202a;
+  font-size: 20px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  color: #526173;
+  font-weight: 700;
+}
+
+.trade-actions {
+  margin-top: 12px;
+}
+
+.trade-actions button {
+  flex: 1;
+}
+
+.trade-message {
+  min-height: 22px;
+  color: #5b4b00;
+  font-weight: 700;
+}
+
+.portfolio-list,
+.ranking-list {
+  display: grid;
+  gap: 8px;
+}
+
+.holding-row,
+.rank-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #e0e7ef;
+  border-radius: 6px;
+  background: #fbfdff;
+}
+
+.rank-row {
+  grid-template-columns: 32px minmax(0, 1fr) auto auto;
+}
+
+.rank-row strong,
+.holding-row span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-rank {
+  border-color: #1167b1;
+  background: #edf6ff;
+}
+
+.holding-row em,
+.rank-row em,
+.rank-row small {
+  font-style: normal;
+  color: #526173;
+}
+
+.empty-state {
+  color: #687789;
+  margin: 0;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(10, 18, 28, .58);
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-card {
+  width: min(860px, 100%);
+  max-height: 88vh;
+  overflow: auto;
+  background: white;
+  border-radius: 8px;
+  padding: 18px;
+}
+
+.winner {
+  font-size: 20px;
+}
+
+@media (max-width: 1100px) {
+  .status-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas: "market" "chart" "trade" "portfolio" "ranking";
+  }
+}
+
+@media (max-width: 680px) {
+  .app-shell {
+    width: min(100% - 20px, 1480px);
+    padding-top: 14px;
+  }
+
+  .topbar,
+  .panel-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .topbar-actions {
+    width: 100%;
+  }
+
+  .topbar-actions button {
+    flex: 1;
+  }
+
+  .status-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .metric strong {
+    font-size: 18px;
+  }
+}

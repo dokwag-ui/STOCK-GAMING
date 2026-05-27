@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>주식게임 Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Hidden Market Simulator</p>
+        <h1>주식게임 Dashboard</h1>
+      </div>
+      <div class="topbar-actions">
+        <button id="resetGameButton" class="ghost-button" type="button">새 게임</button>
+        <button id="nextStepButton" class="primary-button" type="button">다음 분기</button>
+      </div>
+    </header>
+
+    <section class="status-grid" aria-label="게임 현황">
+      <article class="metric"><span>현재 시점</span><strong id="currentStepLabel">2012 Q1</strong></article>
+      <article class="metric"><span>진행률</span><strong id="progressLabel">1 / 57</strong></article>
+      <article class="metric"><span>현금</span><strong id="cashLabel">₩100,000,000</strong></article>
+      <article class="metric"><span>총 평가</span><strong id="totalValueLabel">₩100,000,000</strong></article>
+      <article class="metric"><span>수익률</span><strong id="returnRateLabel">0.00%</strong></article>
+    </section>
+
+    <main class="dashboard-grid">
+      <section class="panel market-panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Market</p>
+            <h2>익명 종목</h2>
+          </div>
+          <select id="themeFilter" aria-label="테마 필터"></select>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>종목</th>
+                <th>테마</th>
+                <th>현재가</th>
+                <th>분기</th>
+                <th>보유</th>
+              </tr>
+            </thead>
+            <tbody id="companyTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel chart-panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Trend</p>
+            <h2 id="selectedCompanyTitle">종목 선택</h2>
+          </div>
+          <span id="selectedCompanyHint" class="hint-chip">힌트 대기</span>
+        </div>
+        <div id="priceChart" class="chart-box" role="img" aria-label="선택 종목 가격 차트"></div>
+        <div id="eventFeed" class="event-feed"></div>
+      </section>
+
+      <section class="panel trade-panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Trade</p>
+            <h2>주문</h2>
+          </div>
+        </div>
+        <div id="tradeSummary" class="trade-summary"></div>
+        <label class="field">
+          <span>수량</span>
+          <input id="tradeQuantity" type="number" min="1" step="1" value="1">
+        </label>
+        <div class="trade-actions">
+          <button id="buyButton" class="primary-button" type="button">매수</button>
+          <button id="sellButton" class="danger-button" type="button">매도</button>
+        </div>
+        <p id="tradeMessage" class="trade-message" aria-live="polite"></p>
+      </section>
+
+      <section class="panel portfolio-panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Portfolio</p>
+            <h2>내 보유 종목</h2>
+          </div>
+        </div>
+        <div id="portfolioList" class="portfolio-list"></div>
+      </section>
+
+      <section class="panel ranking-panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Ranking</p>
+            <h2>투자자 순위</h2>
+          </div>
+        </div>
+        <div id="rankingList" class="ranking-list"></div>
+      </section>
+    </main>
+  </div>
+
+  <div id="endgameModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="endgameTitle">
+    <div class="modal-card">
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Final Reveal</p>
+          <h2 id="endgameTitle">게임 종료</h2>
+        </div>
+        <button id="closeEndgameButton" class="ghost-button" type="button">닫기</button>
+      </div>
+      <div id="endgameContent"></div>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="engine.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
